@@ -87,8 +87,13 @@ class SchemaChecker
             }
 
             if (false !== is_array($expectedType)) {
+                $item = $data[$key];
+                if (false === is_array($item)) {
+                    $this->addInvalidTypeViolation($key, gettype($item), 'array');
+                    continue;
+                }
                 $this->lastKey = $key;
-                $this->check($data[$key], $expectedType);
+                $this->check($item, $expectedType);
                 continue;
             }
 
