@@ -1,0 +1,31 @@
+{
+    "name": "gammabeam82/schema-checker",
+    "description": "Simple schema validation library with no external dependencies.",
+    "keywords": ["json", "validation", "api", "testing", "rest"],
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^7.4"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Paul Mastavy",
+            "email": "gammabeam82@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "ext-json": "*",
+        "ext-mbstring": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Gammabeam82\\SchemaChecker\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    }
+}
