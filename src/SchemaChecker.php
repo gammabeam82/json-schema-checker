@@ -138,7 +138,7 @@ class SchemaChecker
      */
     private function validateKey(string $key, string $type, string $expectedType): bool
     {
-        if (!preg_match("/^([a-z]{1,}|\*)(\|[a-z]{1,}|\|\*)*$/", $expectedType)) {
+        if (false === $this->isSchemaValid($expectedType)) {
             throw new InvalidSchemaException();
         }
 
@@ -155,6 +155,16 @@ class SchemaChecker
         }
 
         return $match;
+    }
+
+    /**
+     * @param string $schema
+     *
+     * @return bool
+     */
+    private function isSchemaValid(string $schema): bool
+    {
+        return (bool)preg_match("/^([a-z]{1,}|\*)(\|[a-z]{1,}|\|\*)*$/", $schema);
     }
 
     /**
@@ -200,7 +210,7 @@ class SchemaChecker
      */
     private function addMissingKeyViolation(string $key): void
     {
-        $this->violations[] = sprintf("Key \"%s\" not found.", $key);
+        $this->violations[] = sprintf("Key \"%s\" not found", $key);
     }
 
     /**
