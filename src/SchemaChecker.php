@@ -138,7 +138,7 @@ class SchemaChecker
      */
     private function validateKey(string $key, string $type, string $expectedType): bool
     {
-        if (!preg_match("/^[a-z]{1,}(\|[a-z]{1,})*$/", $expectedType)) {
+        if (!preg_match("/^([a-z]{1,}|\*)(\|[a-z]{1,}|\|\*)*$/", $expectedType)) {
             throw new InvalidSchemaException();
         }
 
