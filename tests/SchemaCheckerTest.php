@@ -34,6 +34,17 @@ class SchemaCheckerTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testInvalidData(): void
+    {
+        $this->assertFalse(
+            static::$checker->assertSchema(1, FIXTURES::PRODUCT_SCHEMA),
+            static::$checker->getViolations()
+        );
+    }
+
     public function testSuccessfullValidation(): void
     {
         $this->assertTrue(

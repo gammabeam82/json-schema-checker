@@ -3,6 +3,7 @@
 namespace Gammabeam82\SchemaChecker;
 
 use Gammabeam82\SchemaChecker\Exception\InvalidSchemaException;
+use InvalidArgumentException;
 
 /**
  * Class SchemaChecker
@@ -10,10 +11,6 @@ use Gammabeam82\SchemaChecker\Exception\InvalidSchemaException;
  */
 class SchemaChecker
 {
-    public const TYPE_DELIMITER = '|';
-    public const TYPE_WILDCARD = '*';
-    public const TYPE_NULLABLE = 'nullable';
-
     /**
      * @var string[]
      */
@@ -22,7 +19,7 @@ class SchemaChecker
     /**
      * @var string
      */
-    private $lastKey;
+    private $currentKey;
 
     /**
      * @param array|string $data
@@ -34,6 +31,10 @@ class SchemaChecker
     public function assertSchema($data, array $schema): bool
     {
         $this->reset();
+
+        if (false === is_array($data) && false === is_string($data)) {
+            throw new InvalidArgumentException();
+        }
 
         if (false === is_array($data)) {
             $data = json_decode($data, true);
@@ -73,11 +74,11 @@ class SchemaChecker
             $type = gettype($data);
             $expectedType = reset($schema);
 
-            return $this->validateKey($this->lastKey, $type, $expectedType);
+            return $this->validateKey($this->currentKey, $type, $expectedType);
         }
 
         foreach ($schema as $key => $expectedType) {
-            if ('string' !== gettype($key) || self::TYPE_NULLABLE === $key) {
+            if ('string' !== gettype($key) || Types::NULLABLE === $key) {
                 continue;
             }
 
@@ -92,7 +93,7 @@ class SchemaChecker
                     $this->addInvalidTypeViolation($key, gettype($item), 'array');
                     continue;
                 }
-                $this->lastKey = $key;
+                $this->currentKey = $key;
                 $this->check($item, $expectedType);
                 continue;
             }
@@ -122,10 +123,10 @@ class SchemaChecker
     private function isIncludes(string $type, $expected): bool
     {
         if (false !== is_array($expected)) {
-            return 0 !== count(array_intersect([$type, self::TYPE_WILDCARD], $expected));
+            return 0 !== count(array_intersect([$type, Types::WILDCARD], $expected));
         }
 
-        return $type === $expected || self::TYPE_WILDCARD === $expected;
+        return $type === $expected || Types::WILDCARD === $expected;
     }
 
     /**
@@ -142,13 +143,13 @@ class SchemaChecker
             throw new InvalidSchemaException();
         }
 
-        $type = 'NULL' === $type ? self::TYPE_NULLABLE : $type;
+        $type = 'NULL' === $type ? Types::NULLABLE : $type;
 
-        if (false !== mb_strpos($expectedType, self::TYPE_DELIMITER)) {
-            $match = $this->isIncludes($type, explode(self::TYPE_DELIMITER, $expectedType));
-        } else {
-            $match = $this->isIncludes($type, $expectedType);
+        if (false !== mb_strpos($expectedType, Types::DELIMITER)) {
+            $expectedType = explode(Types::DELIMITER, $expectedType);
         }
+
+        $match = $this->isIncludes($type, $expectedType);
 
         if (false === $match) {
             $this->addInvalidTypeViolation($key, $type, $expectedType);
@@ -175,9 +176,9 @@ class SchemaChecker
     private function isNullable($schema): bool
     {
         if (false !== is_array($schema)) {
-            $nullable = $this->isIndexed($schema) ? mb_strpos(reset($schema), self::TYPE_NULLABLE) : array_key_exists(self::TYPE_NULLABLE, $schema);
+            $nullable = $this->isIndexed($schema) ? mb_strpos(reset($schema), Types::NULLABLE) : array_key_exists(Types::NULLABLE, $schema);
         } else {
-            $nullable = mb_strpos($schema, self::TYPE_NULLABLE);
+            $nullable = mb_strpos($schema, Types::NULLABLE);
         }
 
         if (false === $nullable) {
@@ -225,6 +226,6 @@ class SchemaChecker
     private function reset(): void
     {
         $this->violations = [];
-        $this->lastKey = null;
+        $this->currentKey = null;
     }
 }
