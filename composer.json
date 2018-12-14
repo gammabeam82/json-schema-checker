@@ -3,9 +3,6 @@
     "description": "Simple schema validation library with no external dependencies.",
     "keywords": ["json", "validation", "api", "testing", "rest"],
     "type": "library",
-    "require-dev": {
-        "phpunit/phpunit": "^7.4"
-    },
     "license": "MIT",
     "authors": [
         {
@@ -18,6 +15,10 @@
         "ext-json": "*",
         "ext-mbstring": "*"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^7.4",
+        "squizlabs/php_codesniffer": "*"
+    },
     "autoload": {
         "psr-4": {
             "Gammabeam82\\SchemaChecker\\": "src/"
@@ -27,5 +28,9 @@
         "psr-4": {
             "Tests\\": "tests/"
         }
+    },
+    "scripts": {
+        "check": "vendor/bin/phpcs src -n",
+        "fix": "vendor/bin/phpcbf src -n"
     }
 }

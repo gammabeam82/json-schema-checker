@@ -24,6 +24,7 @@ class SchemaCheckerTest extends TestCase
     }
 
     /**
+     * @covers SchemaChecker::assertSchema
      * @expectedException  \Gammabeam82\SchemaChecker\Exception\InvalidSchemaException
      */
     public function testInvalidSchema(): void
@@ -35,6 +36,7 @@ class SchemaCheckerTest extends TestCase
     }
 
     /**
+     *
      * @expectedException \InvalidArgumentException
      */
     public function testInvalidData(): void
