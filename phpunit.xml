@@ -5,7 +5,16 @@
         bootstrap="vendor/autoload.php">
     <testsuites>
         <testsuite name="Default test suite">
-            <directory>tests</directory>
+            <directory>./tests</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <whitelist>
+            <directory>.</directory>
+            <exclude>
+                <directory>./tests</directory>
+                <directory>./vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
 </phpunit>

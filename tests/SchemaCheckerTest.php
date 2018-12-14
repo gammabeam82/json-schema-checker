@@ -4,6 +4,7 @@ namespace Tests;
 
 use Gammabeam82\SchemaChecker\SchemaChecker;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 use Tests\Fixtures\Fixtures;
 
 class SchemaCheckerTest extends TestCase
@@ -12,6 +13,22 @@ class SchemaCheckerTest extends TestCase
      * @var SchemaChecker
      */
     protected static $checker;
+
+    /**
+     * @param string $methodName
+     * @param array $params
+     *
+     * @return mixed
+     * @throws \ReflectionException
+     */
+    private function invokePrivateMethod(string $methodName, array $params = [])
+    {
+        $reflection = new ReflectionClass(static::$checker);
+        $method = $reflection->getMethod($methodName);
+        $method->setAccessible(true);
+
+        return $method->invokeArgs(static::$checker, $params);
+    }
 
     /**
      * @inheritdoc
@@ -23,8 +40,49 @@ class SchemaCheckerTest extends TestCase
         static::$checker = new SchemaChecker();
     }
 
+    public function testIsIndexed(): void
+    {
+        $this->assertTrue($this->invokePrivateMethod('isIndexed', [['foo', 'bar']]));
+        $this->assertFalse($this->invokePrivateMethod('isIndexed', [['foo' => 'bar']]));
+    }
+
+    public function testIsNullable(): void
+    {
+        $this->assertTrue($this->invokePrivateMethod('isNullable', ['string|nullable']));
+        $this->assertTrue($this->invokePrivateMethod('isNullable', [['nullable' => true]]));
+        $this->assertFalse($this->invokePrivateMethod('isNullable', ['string']));
+    }
+
+    public function testIsSchemaValid(): void
+    {
+        $this->assertTrue($this->invokePrivateMethod('isSchemaValid', ['string|nullable']));
+        $this->assertTrue($this->invokePrivateMethod('isSchemaValid', ['*']));
+        $this->assertFalse($this->invokePrivateMethod('isSchemaValid', ['string|nullable|']));
+        $this->assertFalse($this->invokePrivateMethod('isSchemaValid', ['1']));
+    }
+
+    public function testIsIncludes(): void
+    {
+        $this->assertTrue($this->invokePrivateMethod('isIncludes', ['string', 'string']));
+        $this->assertTrue($this->invokePrivateMethod('isIncludes', ['integer', ['string', 'integer']]));
+        $this->assertTrue($this->invokePrivateMethod('isIncludes', ['string', '*']));
+        $this->assertFalse($this->invokePrivateMethod('isIncludes', ['string', 'integer']));
+    }
+
+    public function testValidateKey(): void
+    {
+        $this->assertTrue($this->invokePrivateMethod('validateKey', ['test', 'string', 'string']));
+        $this->assertTrue($this->invokePrivateMethod('validateKey', ['test', 'NULL', 'string|nullable']));
+        $this->assertTrue($this->invokePrivateMethod('validateKey', ['test', 'string', '*']));
+        $this->assertFalse($this->invokePrivateMethod('validateKey', ['test', 'boolean', 'string']));
+    }
+
+    public function testGetViolations(): void
+    {
+        $this->assertIsString(static::$checker->getViolations());
+    }
+
     /**
-     * @covers SchemaChecker::assertSchema
      * @expectedException  \Gammabeam82\SchemaChecker\Exception\InvalidSchemaException
      */
     public function testInvalidSchema(): void
