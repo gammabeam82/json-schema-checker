@@ -27,6 +27,7 @@ class SchemaChecker
      *
      * @return bool
      * @throws InvalidSchemaException
+     * @throws InvalidArgumentException
      */
     public function assertSchema($data, array $schema): bool
     {
