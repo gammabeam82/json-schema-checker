@@ -88,7 +88,7 @@ class SchemaCheckerTest extends TestCase
     public function testInvalidSchema(): void
     {
         $this->assertFalse(
-            static::$checker->assertSchema(FIXTURES::PRODUCT, []),
+            static::$checker->assertDataMatchesSchema(FIXTURES::PRODUCT, []),
             static::$checker->getViolations()
         );
     }
@@ -100,7 +100,7 @@ class SchemaCheckerTest extends TestCase
     public function testInvalidData(): void
     {
         $this->assertFalse(
-            static::$checker->assertSchema(1, FIXTURES::PRODUCT_SCHEMA),
+            static::$checker->assertDataMatchesSchema(1, FIXTURES::PRODUCT_SCHEMA),
             static::$checker->getViolations()
         );
     }
@@ -108,23 +108,23 @@ class SchemaCheckerTest extends TestCase
     public function testSuccessfullValidation(): void
     {
         $this->assertTrue(
-            static::$checker->assertSchema(FIXTURES::PRODUCT, FIXTURES::PRODUCT_SCHEMA),
+            static::$checker->assertDataMatchesSchema(FIXTURES::PRODUCT, FIXTURES::PRODUCT_SCHEMA),
             static::$checker->getViolations()
         );
         $this->assertTrue(
-            static::$checker->assertSchema(FIXTURES::CATEGORY, FIXTURES::CATEGORY_SCHEMA),
+            static::$checker->assertDataMatchesSchema(FIXTURES::CATEGORY, FIXTURES::CATEGORY_SCHEMA),
             static::$checker->getViolations()
         );
         $this->assertTrue(
-            static::$checker->assertSchema(FIXTURES::CATEGORY_WITH_PRODUCTS, FIXTURES::CATEGORY_WITH_PRODUCTS_SCHEMA),
+            static::$checker->assertDataMatchesSchema(FIXTURES::CATEGORY_WITH_PRODUCTS, FIXTURES::CATEGORY_WITH_PRODUCTS_SCHEMA),
             static::$checker->getViolations()
         );
         $this->assertTrue(
-            static::$checker->assertSchema(FIXTURES::USER, FIXTURES::USER_SCHEMA),
+            static::$checker->assertDataMatchesSchema(FIXTURES::USER, FIXTURES::USER_SCHEMA),
             static::$checker->getViolations()
         );
         $this->assertTrue(
-            static::$checker->assertSchema(FIXTURES::USER_WITHOUT_ROLES, FIXTURES::USER_SCHEMA),
+            static::$checker->assertDataMatchesSchema(FIXTURES::USER_WITHOUT_ROLES, FIXTURES::USER_SCHEMA),
             static::$checker->getViolations()
         );
     }
@@ -132,15 +132,15 @@ class SchemaCheckerTest extends TestCase
     public function testValidationWithErrors(): void
     {
         $this->assertFalse(
-            static::$checker->assertSchema(FIXTURES::MISSING_KEY_PRODUCT, FIXTURES::PRODUCT_SCHEMA),
+            static::$checker->assertDataMatchesSchema(FIXTURES::MISSING_KEY_PRODUCT, FIXTURES::PRODUCT_SCHEMA),
             static::$checker->getViolations()
         );
         $this->assertFalse(
-            static::$checker->assertSchema(FIXTURES::INVALID_TYPE_PRODUCT, FIXTURES::PRODUCT_SCHEMA),
+            static::$checker->assertDataMatchesSchema(FIXTURES::INVALID_TYPE_PRODUCT, FIXTURES::PRODUCT_SCHEMA),
             static::$checker->getViolations()
         );
         $this->assertFalse(
-            static::$checker->assertSchema(FIXTURES::CATEGORY, FIXTURES::CATEGORY_WITH_PRODUCTS_SCHEMA),
+            static::$checker->assertDataMatchesSchema(FIXTURES::CATEGORY, FIXTURES::CATEGORY_WITH_PRODUCTS_SCHEMA),
             static::$checker->getViolations()
         );
     }

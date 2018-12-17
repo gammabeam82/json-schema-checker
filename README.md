@@ -36,7 +36,7 @@ class CategoryControllerTest extends WebTestCase
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         
         $this->assertTrue(
-            static::$schemaChecker->assertSchema($response->getContent(), [
+            static::$schemaChecker->assertDataMatchesSchema($response->getContent(), [
                 'id' => 'integer',
                 'name' => 'string',
                 'image' => 'string|nullable',

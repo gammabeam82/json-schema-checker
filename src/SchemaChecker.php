@@ -29,7 +29,7 @@ class SchemaChecker
      * @throws InvalidSchemaException
      * @throws InvalidArgumentException
      */
-    public function assertSchema($data, array $schema): bool
+    public function assertDataMatchesSchema($data, array $schema): bool
     {
         $this->reset();
 
@@ -166,7 +166,7 @@ class SchemaChecker
      */
     private function isSchemaValid(string $schema): bool
     {
-        return (bool)preg_match("/^([a-z]{1,}|\*)(\|[a-z]{1,}|\|\*)*$/", $schema);
+        return (bool)preg_match("/^([a-z]{4,}|\*)(\|[a-z]{4,}|\|\*)*$/", $schema);
     }
 
     /**
@@ -177,7 +177,9 @@ class SchemaChecker
     private function isNullable($schema): bool
     {
         if (false !== is_array($schema)) {
-            $nullable = $this->isIndexed($schema) ? mb_strpos(reset($schema), Types::NULLABLE) : array_key_exists(Types::NULLABLE, $schema);
+            $nullable = $this->isIndexed($schema)
+                ? mb_strpos(reset($schema), Types::NULLABLE)
+                : array_key_exists(Types::NULLABLE, $schema) && true === $schema[Types::NULLABLE];
         } else {
             $nullable = mb_strpos($schema, Types::NULLABLE);
         }
