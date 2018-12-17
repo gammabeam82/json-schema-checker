@@ -72,10 +72,7 @@ class SchemaChecker
         }
 
         if (false === is_array($data) && false !== $this->isIndexed($schema)) {
-            $type = gettype($data);
-            $expectedType = reset($schema);
-
-            return $this->validateKey($this->currentKey, $type, $expectedType);
+            return $this->validateKey($this->currentKey, $this->getDataItemType($data), reset($schema));
         }
 
         foreach ($schema as $key => $expectedType) {
@@ -99,7 +96,7 @@ class SchemaChecker
                 continue;
             }
 
-            $this->validateKey($key, gettype($data[$key]), $expectedType);
+            $this->validateKey($key, $this->getDataItemType($data[$key]), $expectedType);
         }
 
         return 0 === count($this->violations);
@@ -144,13 +141,11 @@ class SchemaChecker
             throw new InvalidSchemaException();
         }
 
-        $type = 'NULL' === $type ? Types::NULLABLE : $type;
-
         if (false !== mb_strpos($expectedType, Types::DELIMITER)) {
-            $expectedType = explode(Types::DELIMITER, $expectedType);
+            $match = $this->isIncludes($type, explode(Types::DELIMITER, $expectedType));
+        } else {
+            $match = $this->isIncludes($type, $expectedType);
         }
-
-        $match = $this->isIncludes($type, $expectedType);
 
         if (false === $match) {
             $this->addInvalidTypeViolation($key, $type, $expectedType);
@@ -189,6 +184,18 @@ class SchemaChecker
         }
 
         return $nullable;
+    }
+
+    /**
+     * @param mixed $data
+     *
+     * @return string
+     */
+    private function getDataItemType($data): string
+    {
+        $type = gettype($data);
+
+        return 'NULL' === $type ? Types::NULLABLE : $type;
     }
 
     /**
