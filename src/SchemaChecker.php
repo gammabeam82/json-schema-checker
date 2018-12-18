@@ -213,7 +213,12 @@ class SchemaChecker
      */
     private function addInvalidTypeViolation(string $key, string $type, string $expected): void
     {
-        $this->violations[] = sprintf("Unexpected type of key: \"%s\". Expected: \"%s\", got: \"%s\"", $key, $expected, $type);
+        $this->violations[] = sprintf(
+            'Unexpected type of key: "%1$s". Expected: "%3$s", got: "%2$s"',
+            $key,
+            $type,
+            $expected
+        );
     }
 
     /**

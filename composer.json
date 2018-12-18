@@ -30,7 +30,7 @@
         }
     },
     "scripts": {
-        "check": "vendor/bin/phpcs src -n",
-        "fix": "vendor/bin/phpcbf src -n"
+        "check": "vendor/bin/phpcs src",
+        "fix": "vendor/bin/phpcbf src"
     }
 }
