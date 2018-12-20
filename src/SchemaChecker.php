@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Gammabeam82\SchemaChecker;
 
 use Gammabeam82\SchemaChecker\Exception\InvalidSchemaException;
@@ -173,10 +175,10 @@ class SchemaChecker
     {
         if (false !== is_array($schema)) {
             $nullable = $this->isIndexed($schema)
-                ? mb_strpos(reset($schema), Types::NULLABLE)
+                ? false !== mb_strpos(reset($schema), Types::NULLABLE)
                 : array_key_exists(Types::NULLABLE, $schema) && true === $schema[Types::NULLABLE];
         } else {
-            $nullable = mb_strpos($schema, Types::NULLABLE);
+            $nullable = (false !== mb_strpos($schema, Types::NULLABLE));
         }
 
         if (false === $nullable) {
