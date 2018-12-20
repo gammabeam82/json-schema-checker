@@ -16,12 +16,20 @@ class SchemaChecker
     /**
      * @var string[]
      */
-    private $violations = [];
+    private $violations;
 
     /**
      * @var string
      */
     private $currentKey;
+
+    /**
+     * SchemaChecker constructor.
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
 
     /**
      * @param array|string $data
@@ -73,7 +81,7 @@ class SchemaChecker
             $data = reset($data);
         }
 
-        if (false === is_array($data) && false !== $this->isIndexed($schema)) {
+        if (false !== $this->isPlain($data, $schema)) {
             return $this->validateKey($this->currentKey, $this->getDataItemType($data), reset($schema));
         }
 
@@ -164,6 +172,17 @@ class SchemaChecker
     private function isSchemaValid(string $schema): bool
     {
         return (bool)preg_match("/^([a-z]{4,}|\*)(\|[a-z]{4,}|\|\*)*$/", $schema);
+    }
+
+    /**
+     * @param mixed $data
+     * @param array $schema
+     *
+     * @return bool
+     */
+    private function isPlain($data, array $schema): bool
+    {
+        return false === is_array($data) && false !== $this->isIndexed($schema);
     }
 
     /**

@@ -18,6 +18,10 @@ class Fixtures
             'images' => [
                 'id' => 'integer',
                 'filename' => 'string'
+            ],
+            'added_by' => [
+                'id' => 'integer',
+                'username' => 'string'
             ]
         ]
     ];
@@ -72,6 +76,10 @@ class Fixtures
                         'id' => 1,
                         'filename' => 'test.png'
                     ]
+                ],
+                'added_by' => [
+                    'id' => 2,
+                    'username' => 'testuser'
                 ]
             ]
         ]

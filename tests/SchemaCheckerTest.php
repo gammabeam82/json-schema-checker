@@ -46,6 +46,12 @@ class SchemaCheckerTest extends TestCase
         $this->assertFalse($this->invokePrivateMethod('isIndexed', [['foo' => 'bar']]));
     }
 
+    public function testIsPlain(): void
+    {
+        $this->assertTrue($this->invokePrivateMethod('isPlain', ['test', ['string']]));
+        $this->assertFalse($this->invokePrivateMethod('isPlain', ['test', ['foo' => 'string']]));
+    }
+
     public function testIsNullable(): void
     {
         $this->assertTrue($this->invokePrivateMethod('isNullable', ['string|nullable']));
