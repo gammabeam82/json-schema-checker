@@ -1,11 +1,12 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Gammabeam82\SchemaChecker;
 
 use Gammabeam82\SchemaChecker\Exception\InvalidSchemaException;
 use InvalidArgumentException;
+use LogicException;
 
 /**
  * Class SchemaChecker
@@ -37,7 +38,6 @@ class SchemaChecker
      *
      * @return bool
      * @throws InvalidSchemaException
-     * @throws InvalidArgumentException
      */
     public function assertDataMatchesSchema($data, array $schema): bool
     {
@@ -58,6 +58,14 @@ class SchemaChecker
         }
 
         return $this->check($data, $schema);
+    }
+
+    /**
+     * @return string
+     */
+    public function getViolations(): string
+    {
+        return 0 !== count($this->violations) ? implode(",\n", $this->violations) : '';
     }
 
     /**
@@ -82,7 +90,17 @@ class SchemaChecker
         }
 
         if (false !== $this->isPlain($data, $schema)) {
+            if (null === $this->currentKey) {
+                throw new LogicException();
+            }
+
             return $this->validateKey($this->currentKey, $this->getDataItemType($data), reset($schema));
+        }
+
+        if (false === is_array($data)) {
+            $this->addInvalidDataViolation();
+
+            return false;
         }
 
         foreach ($schema as $key => $expectedType) {
@@ -194,10 +212,10 @@ class SchemaChecker
     {
         if (false !== is_array($schema)) {
             $nullable = $this->isIndexed($schema)
-                ? false !== mb_strpos(reset($schema), Types::NULLABLE)
+                ? $this->containsNullableType(reset($schema))
                 : array_key_exists(Types::NULLABLE, $schema) && true === $schema[Types::NULLABLE];
         } else {
-            $nullable = (false !== mb_strpos($schema, Types::NULLABLE));
+            $nullable = $this->containsNullableType($schema);
         }
 
         if (false === $nullable) {
@@ -205,6 +223,16 @@ class SchemaChecker
         }
 
         return $nullable;
+    }
+
+    /**
+     * @param string $schemaItem
+     *
+     * @return bool
+     */
+    private function containsNullableType(string $schemaItem): bool
+    {
+        return false !== mb_strpos($schemaItem, Types::NULLABLE);
     }
 
     /**
@@ -217,14 +245,6 @@ class SchemaChecker
         $type = gettype($data);
 
         return 'NULL' === $type ? Types::NULLABLE : $type;
-    }
-
-    /**
-     * @return string
-     */
-    public function getViolations(): string
-    {
-        return 0 !== count($this->violations) ? implode(",\n", $this->violations) : '';
     }
 
     /**

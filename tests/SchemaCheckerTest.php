@@ -59,6 +59,12 @@ class SchemaCheckerTest extends TestCase
         $this->assertFalse($this->invokePrivateMethod('isNullable', ['string']));
     }
 
+    public function testContainsNullableType(): void
+    {
+        $this->assertTrue($this->invokePrivateMethod('containsNullableType', ['nullable|string']));
+        $this->assertFalse($this->invokePrivateMethod('containsNullableType', ['string']));
+    }
+
     public function testIsSchemaValid(): void
     {
         $this->assertTrue($this->invokePrivateMethod('isSchemaValid', ['string|nullable']));
