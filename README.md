@@ -1,7 +1,7 @@
-####Description
+#### Description
 This library provides an easy way to validate api responses.
 
-####Usage
+#### Usage
 
 ```php
 use Gammabeam82\SchemaChecker\SchemaChecker;
