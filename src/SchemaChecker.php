@@ -44,7 +44,7 @@ class SchemaChecker
         $this->reset();
 
         if (false === is_array($data) && false === is_string($data)) {
-            throw new InvalidArgumentException();
+            throw new InvalidArgumentException('Invalid data format.');
         }
 
         if (false === is_array($data)) {
@@ -78,7 +78,7 @@ class SchemaChecker
     private function check(array $data, array $schema): bool
     {
         if (0 === count($schema)) {
-            throw new InvalidSchemaException();
+            throw new InvalidSchemaException('Schema cannot be empty.');
         }
 
         if (0 === count($data)) {
@@ -98,7 +98,7 @@ class SchemaChecker
         }
 
         if (false === is_array($data)) {
-            $this->addInvalidDataViolation();
+            $this->addInvalidDataViolation('Data is expected to be of type array.');
 
             return false;
         }
@@ -166,7 +166,7 @@ class SchemaChecker
     private function validateKey(string $key, string $type, string $expectedType): bool
     {
         if (false === $this->isSchemaValid($expectedType)) {
-            throw new InvalidSchemaException();
+            throw new InvalidSchemaException(sprintf('Schema contains invalid characters at key: %s', $key));
         }
 
         if (false !== mb_strpos($expectedType, Types::DELIMITER)) {
@@ -219,7 +219,7 @@ class SchemaChecker
         }
 
         if (false === $nullable) {
-            $this->addInvalidDataViolation();
+            $this->addInvalidDataViolation('Null value not allowed.');
         }
 
         return $nullable;
@@ -249,25 +249,29 @@ class SchemaChecker
 
     /**
      * @param string $key
+     */
+    private function addMissingKeyViolation(string $key): void
+    {
+        $this->violations[] = sprintf("Key \"%s\" not found", $key);
+    }
+
+    /**
+     * @param string $key
      * @param string $type
      * @param string $expected
      */
     private function addInvalidTypeViolation(string $key, string $type, string $expected): void
     {
+        if (Types::NULLABLE === $type) {
+            $type = 'null';
+        }
+
         $this->violations[] = sprintf(
             'Unexpected type of key: "%1$s". Expected: "%3$s", got: "%2$s"',
             $key,
             $type,
             $expected
         );
-    }
-
-    /**
-     * @param string $key
-     */
-    private function addMissingKeyViolation(string $key): void
-    {
-        $this->violations[] = sprintf("Key \"%s\" not found", $key);
     }
 
     /**
