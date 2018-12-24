@@ -204,18 +204,16 @@ class SchemaChecker
     }
 
     /**
-     * @param string|array $schema
+     * @param array $schema
      *
      * @return bool
      */
-    private function isNullable($schema): bool
+    private function isNullable(array $schema): bool
     {
-        if (false !== is_array($schema)) {
-            $nullable = $this->isIndexed($schema)
-                ? $this->containsNullableType(reset($schema))
-                : array_key_exists(Types::NULLABLE, $schema) && true === $schema[Types::NULLABLE];
+        if (false !== $this->isIndexed($schema)) {
+            $nullable = $this->containsNullableType(reset($schema));
         } else {
-            $nullable = $this->containsNullableType($schema);
+            $nullable = array_key_exists(Types::NULLABLE, $schema) && true === $schema[Types::NULLABLE];
         }
 
         if (false === $nullable) {
