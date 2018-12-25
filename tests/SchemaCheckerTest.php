@@ -83,10 +83,16 @@ class SchemaCheckerTest extends TestCase
 
     public function testValidateKey(): void
     {
-        $this->assertTrue($this->invokePrivateMethod('validateKey', ['test', 'string', 'string']));
-        $this->assertTrue($this->invokePrivateMethod('validateKey', ['test', 'nullable', 'string|nullable']));
-        $this->assertTrue($this->invokePrivateMethod('validateKey', ['test', 'string', '*']));
-        $this->assertFalse($this->invokePrivateMethod('validateKey', ['test', 'boolean', 'string']));
+        $this->assertTrue($this->invokePrivateMethod('validateKey', ['key', ['key' => 1]]));
+        $this->assertFalse($this->invokePrivateMethod('validateKey', ['key', ['test' => 1]]));
+    }
+
+    public function testValidateKeyType(): void
+    {
+        $this->assertTrue($this->invokePrivateMethod('validateKeyType', ['test', 'string', 'string']));
+        $this->assertTrue($this->invokePrivateMethod('validateKeyType', ['test', 'nullable', 'string|nullable']));
+        $this->assertTrue($this->invokePrivateMethod('validateKeyType', ['test', 'string', '*']));
+        $this->assertFalse($this->invokePrivateMethod('validateKeyType', ['test', 'boolean', 'string']));
     }
 
     public function testGetViolations(): void

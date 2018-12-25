@@ -94,7 +94,7 @@ class SchemaChecker
                 throw new LogicException();
             }
 
-            return $this->validateKey($this->currentKey, $this->getDataItemType($data), reset($schema));
+            return $this->validateKeyType($this->currentKey, $this->getDataItemType($data), reset($schema));
         }
 
         if (false === is_array($data)) {
@@ -108,8 +108,7 @@ class SchemaChecker
                 continue;
             }
 
-            if (false === array_key_exists($key, $data)) {
-                $this->addMissingKeyViolation($key);
+            if (false === $this->validateKey($key, $data)) {
                 continue;
             }
 
@@ -124,7 +123,7 @@ class SchemaChecker
                 continue;
             }
 
-            $this->validateKey($key, $this->getDataItemType($data[$key]), $expectedType);
+            $this->validateKeyType($key, $this->getDataItemType($data[$key]), $expectedType);
         }
 
         return 0 === count($this->violations);
@@ -157,13 +156,30 @@ class SchemaChecker
 
     /**
      * @param string $key
+     * @param array $data
+     *
+     * @return bool
+     */
+    private function validateKey(string $key, array $data): bool
+    {
+        $isKeyExists = array_key_exists($key, $data);
+
+        if (false === $isKeyExists) {
+            $this->addMissingKeyViolation($key);
+        }
+
+        return $isKeyExists;
+    }
+
+    /**
+     * @param string $key
      * @param string $type
      * @param string $expectedType
      *
      * @return bool
      * @throws InvalidSchemaException
      */
-    private function validateKey(string $key, string $type, string $expectedType): bool
+    private function validateKeyType(string $key, string $type, string $expectedType): bool
     {
         if (false === $this->isSchemaValid($expectedType)) {
             throw new InvalidSchemaException(sprintf('Schema contains invalid characters at key: %s', $key));
