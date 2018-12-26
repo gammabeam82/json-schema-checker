@@ -104,10 +104,6 @@ class SchemaChecker
         }
 
         foreach ($schema as $key => $expectedType) {
-            if ('string' !== gettype($key) || Types::NULLABLE === $key) {
-                continue;
-            }
-
             if (false === $this->validateKey($key, $data)) {
                 continue;
             }
@@ -155,20 +151,24 @@ class SchemaChecker
     }
 
     /**
-     * @param string $key
+     * @param mixed $key
      * @param array $data
      *
      * @return bool
      */
-    private function validateKey(string $key, array $data): bool
+    private function validateKey($key, array $data): bool
     {
-        $isKeyExists = array_key_exists($key, $data);
+        if ('string' !== gettype($key) || Types::NULLABLE === $key) {
+            return false;
+        }
 
-        if (false === $isKeyExists) {
+        $keyExists = array_key_exists($key, $data);
+
+        if (false === $keyExists) {
             $this->addMissingKeyViolation($key);
         }
 
-        return $isKeyExists;
+        return $keyExists;
     }
 
     /**

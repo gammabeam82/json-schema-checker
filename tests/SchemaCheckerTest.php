@@ -84,6 +84,7 @@ class SchemaCheckerTest extends TestCase
     public function testValidateKey(): void
     {
         $this->assertTrue($this->invokePrivateMethod('validateKey', ['key', ['key' => 1]]));
+        $this->assertFalse($this->invokePrivateMethod('validateKey', [['key'], ['key' => 1]]));
         $this->assertFalse($this->invokePrivateMethod('validateKey', ['key', ['test' => 1]]));
     }
 

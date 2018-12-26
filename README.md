@@ -44,12 +44,12 @@ class CategoryControllerTest extends WebTestCase
                 'products' => [
                     'nullable' => true,
                     'id' => 'integer',
-                    'name' => 'string'.
+                    'name' => 'string',
                     'description' => 'string',
                     'images' => [
                         'nullable' => true,
                         'id' => 'integer',
-                        'filename' => 'string'.
+                        'filename' => 'string'
                     ]
                 ]
             ]),
