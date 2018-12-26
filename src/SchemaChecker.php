@@ -108,10 +108,12 @@ class SchemaChecker
                 continue;
             }
 
+            $item = $data[$key];
+            $type = $this->getDataItemType($item);
+
             if (false !== is_array($expectedType)) {
-                $item = $data[$key];
                 if (false === is_array($item)) {
-                    $this->addInvalidTypeViolation($key, gettype($item), 'array');
+                    $this->addInvalidTypeViolation($key, $type, 'array');
                     continue;
                 }
                 $this->currentKey = $key;
@@ -119,7 +121,7 @@ class SchemaChecker
                 continue;
             }
 
-            $this->validateKeyType($key, $this->getDataItemType($data[$key]), $expectedType);
+            $this->validateKeyType($key, $type, $expectedType);
         }
 
         return 0 === count($this->violations);
