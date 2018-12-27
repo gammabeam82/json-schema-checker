@@ -1,8 +1,13 @@
+![](https://img.shields.io/github/license/gammabeam82/schema-checker.svg) ![](https://img.shields.io/github/release/gammabeam82/schema-checker.svg)
 #### Description
 This library provides an easy way to validate api responses.
 
-#### Usage
+#### Installation
+```bash
+composer require --dev gammabeam82/schema-checker
+```
 
+#### Usage
 ```php
 use Gammabeam82\SchemaChecker\SchemaChecker;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
