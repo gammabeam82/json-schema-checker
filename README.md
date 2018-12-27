@@ -1,4 +1,4 @@
-![](https://img.shields.io/github/license/gammabeam82/schema-checker.svg) ![](https://img.shields.io/github/release/gammabeam82/schema-checker.svg)
+[![Build Status](https://travis-ci.org/gammabeam82/schema-checker.svg?branch=master)](https://travis-ci.org/gammabeam82/schema-checker) ![](https://img.shields.io/github/license/gammabeam82/schema-checker.svg) ![](https://img.shields.io/github/release/gammabeam82/schema-checker.svg)
 #### Description
 This library provides an easy way to validate api responses.
 
