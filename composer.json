@@ -2,6 +2,7 @@
     "name": "gammabeam82/schema-checker",
     "description": "Simple schema validation library with no external dependencies.",
     "keywords": ["json", "validation", "api", "testing", "rest"],
+    "homepage": "https://github.com/gammabeam82/schema-checker",
     "type": "library",
     "license": "MIT",
     "authors": [
